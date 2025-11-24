@@ -1,0 +1,36 @@
+name: ESP32 Marauder Auto Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install PlatformIO
+      run: |
+        pip install -U platformio
+
+    - name: Run PlatformIO Build
+      run: |
+        platformio run
+
+    - name: Upload Compiled BIN File
+      uses: actions/upload-artifact@v4
+      with:
+        name: ESP32-MARAUDER-BUILD
+        path: |
+          .pio/build/esp32dev/firmware.bin
+          .pio/build/esp32dev/partitions.bin
+          .pio/build/esp32dev/bootloader.bin
